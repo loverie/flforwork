@@ -1,0 +1,369 @@
+import os
+import copy
+import argparse
+import pickle
+from tqdm import tqdm
+import numpy as np
+from sklearn.decomposition import PCA
+import torch
+import torch.nn.functional as F
+from torch import optim
+from sklearn.cluster import KMeans
+from sklearn.manifold import TSNE
+from Models import Mnist_2NN, Mnist_CNN 
+import random
+from clients import ClientsGroup  
+import matplotlib.pyplot as plt
+import math
+from sklearn.impute import SimpleImputer
+
+def cos(a, b):
+    res = np.sum(a*b.T)/((np.sqrt(np.sum(a * a.T)) + 1e-9) * (np.sqrt(np.sum(b * b.T))) + 1e-9) 
+    '''relu'''
+    if res < 0:
+        res = 0
+    return res
+    # a_norm = np.linalg.norm(a)
+    # b_norm = np.linalg.norm(b)
+    # if a_norm == 0 or b_norm == 0:
+    #     return 0
+    # return np.dot(a, b) / (a_norm * b_norm)
+
+def model2vector(model):
+    nparr = np.array([])
+    for key, var in model.items():
+        if key.split('.')[-1] == 'num_batches_tracked' or key.split('.')[-1] == 'running_mean' or key.split('.')[-1] == 'running_var':
+            continue
+        nplist = var.cpu().numpy()
+        nplist = nplist.ravel()
+        nparr = np.append(nparr, nplist)
+    return nparr
+
+def get_weight(update, model):
+    for key, var in update.items():
+        update[key] -= model[key]
+    return update
+
+def poison_update(update):
+    print("attack happen here!")
+    '''Simulate a poison update by adding random noise'''
+    for key, var in update.items():
+        noise = torch.randn_like(var) * 0.8
+        update[key] += noise
+    return update
+
+def detection1(local_updates1 ,update_vectors1, global_vector, clients_in_comm, trust_scores,update_weights=None):
+    
+    if update_weights is None:
+        update_weights = []
+
+    update_vectors = np.array(update_vectors1)
+    # print('global_vector', global_vector)
+
+    # 数据预处理
+    imputer = SimpleImputer(strategy='mean')
+    update_vectors = imputer.fit_transform(update_vectors)
+
+    pca = PCA(n_components=0.95)
+    pca.fit(update_vectors)
+    update_vectors = pca.transform(update_vectors)
+    # global_vector = pca.transform(global_vector)
+    # global_vector = pca.transform(global_vector.reshape(1, -1)).flatten() 
+
+    # print(f"Best k: {best_k}, best Gap: {best_gap}")
+    update_vectors = []
+    update_vectors = np.array(update_vectors1)
+    # K-Means聚合 init='k-means++'，取得最佳聚类结果
+    kmeans_best = KMeans(n_clusters=2,init='k-means++', random_state=42)
+    kmeans_best.fit(update_vectors)
+    labels = kmeans_best.labels_
+    centroids = kmeans_best.cluster_centers_
+    best_k = 2
+
+    # 计算簇的信任分数
+    trust_scores_temp = []
+    for i in range(best_k):
+        update_vectors_cluster = update_vectors[labels == i]
+        if update_vectors_cluster.size > 0:
+            centroid = centroids[i]
+            sim = cos(centroid, global_vector)
+            trust_score = 1 + sim
+            trust_scores_temp.append((trust_score, i))
+
+    trust_scores_temp.sort(key=lambda x: x[0], reverse=True)
+    clusterIndexForTrust = trust_scores_temp[0][1]
+    high_confidence_users = np.where(labels == clusterIndexForTrust)[0]
+    num_users_to_select = min(10, len(high_confidence_users))
+    random_users_in_trusted_cluster = random.sample(list(high_confidence_users), num_users_to_select)
+    # print(trust_scores_temp[1][0])
+    # print('trust_scores_temp : ', trust_scores_temp)
+
+    # # 排除簇分数小于1.8的簇
+    # valid_clusters = [cluster_idx for _, (trust_score, cluster_idx) in enumerate(trust_scores_temp) if trust_score >= 1.8]
+    # valid_cluster_indices = np.array([idx for idx, (trust_score, _) in enumerate(trust_scores_temp) if trust_score >= 1.8])
+
+    # 计算用户置信分数
+    user_confidence_scores = np.zeros(len(update_vectors))
+    # for idx, centroid in enumerate(centroids[clusterIndexForTrust]):
+        # cluster_indices = np.where(labels == clusterIndexForTrust)[0]
+        # print('cluster_indices' ,cluster_indices)
+        # print(cluster_indices)
+    print('clusterIndexForTrust', clusterIndexForTrust)
+    centroid = centroids[clusterIndexForTrust]
+    for user_idx in random_users_in_trusted_cluster:
+        # print(user_idx)
+        distance = cos(update_vectors[user_idx], centroid)
+        if distance<0:
+            distance=0;
+            # trust_score_value = trust_scores[int(clients_in_comm[user_idx][6:])]
+        trust_score_value = trust_scores[user_idx]
+        # print(trust_score_value)
+        # print(distance)
+            # a = math.exp(-(trust_score_value ** 2))
+            # user_confidence_scores[user_idx] = ((1 / (1 + a)) + distance) * trust_scores_temp[clusterIndexForTrust][0]
+        user_confidence_scores[user_idx] = (((0.125*trust_score_value) + (distance*0.875))) 
+        # print(user_confidence_scores[user_idx])
+            # print(user_confidence_scores[user_idx])
+        if user_confidence_scores[user_idx] < 0:
+            user_confidence_scores[user_idx] = 0
+        trust_scores[user_idx] = user_confidence_scores[user_idx]
+
+    # 统计每个簇中的用户个数并输出簇编号
+    unique_labels, cluster_counts = np.unique(labels, return_counts=True)
+    for cluster_id, count in zip(unique_labels, cluster_counts):
+        print(f"Cluster {cluster_id} has {count} users")
+        
+    # 过滤用户分数低于 3.4的用户
+    # high_confidence_users = np.where(user_confidence_scores >= -9)[0]
+    # high_confidence_users = np.where(labels == clusterIndexForTrust)[0]
+    print("High confidence users0:", high_confidence_users)
+    print('信任分数： ', trust_scores)
+    # print('信任分数矩阵', trust_scores)
+    # # 初始化高信任分数用户列表
+    # users_in_trusted_cluster = []
+
+    # # 遍历信任分数最高的簇中的所有用户
+    # for user_idx in high_confidence_users:
+    #     if user_confidence_scores[user_idx] > 0:
+    #         users_in_trusted_cluster.append(user_idx)
+
+    # # 将列表转换为数组，如果需要的话
+    # high_confidence_users = np.array(users_in_trusted_cluster)
+
+    # # 打印高信任分数用户
+    # print("High confidence users:", high_confidence_users)
+    # num_users_to_select = min(10, len(high_confidence_users))
+    # random_users_in_trusted_cluster = random.sample(list(high_confidence_users), num_users_to_select)
+
+    # # 打印随机选取的用户索引
+    print("Randomly selected users from the most trusted cluster:", random_users_in_trusted_cluster)
+
+    # 选择更新
+    selected_updates = [local_updates1[i] for i in random_users_in_trusted_cluster]
+
+    # 计算权重
+    selected_user_scores = user_confidence_scores[random_users_in_trusted_cluster]
+    selected_user_weights = selected_user_scores / np.sum(selected_user_scores)
+
+
+    # 更新权重列表
+    update_weights.append(selected_user_weights)
+    update_weights = np.array(update_weights).flatten()
+    print('用户权重：',update_weights )
+
+    # print(f"Selected user scores: {selected_user_scores}") 
+    # print(f"Selected user weights: {update_weights}")
+
+    return best_k, selected_updates, user_confidence_scores, update_weights
+
+
+
+parser = argparse.ArgumentParser(formatter_class=argparse.ArgumentDefaultsHelpFormatter, description="FedDekrum")
+parser.add_argument('-g', '--gpu', type=str, default='0', help='gpu id to use(e.g. 0,1,2,3)')
+parser.add_argument('-nc', '--num_of_clients', type=int, default=40, help='number of the clients')
+parser.add_argument('-cf', '--cfraction', type=float, default=0.6, help='C fraction, 0 means 1 client, 1 means total clients')
+parser.add_argument('-E', '--epoch', type=int, default=5, help='local train epoch')
+parser.add_argument('-B', '--batchsize', type=int, default=128, help='local train batch size')
+parser.add_argument('-mn', '--model_name', type=str, default='mnist_cnn', help='the model to train')
+parser.add_argument('-lr', "--learning_rate", type=float, default=0.01, help="learning rate, use value from origin paper as default")
+parser.add_argument('-vf', "--val_freq", type=int, default=1, help="model validation frequency(of communications)")
+parser.add_argument('-sf', '--save_freq', type=int, default=1000, help='global model save frequency(of communication)')
+parser.add_argument('-ncomm', '--num_comm', type=int, default=100, help='number of communications')
+parser.add_argument('-sp', '--save_path', type=str, default='./checkpoints', help='the saving path of checkpoints')
+parser.add_argument('-iid', '--IID', type=int, default=0, help='the way to allocate data to clients')
+parser.add_argument('-atp', '--attack_type', type=int, default=3, help='the types to attack')
+parser.add_argument('-att', '--attack_turn', type=int, default=1, help='the turns to attack')
+parser.add_argument('-atn', '--attack_num', type=int, default=60, help='the num to attack')
+parser.add_argument('-gs', '--group_size', type=int, default=10, help='number of attackers in a group')
+
+def test_mkdir(path):
+    if not os.path.isdir(path):
+        os.mkdir(path)
+
+
+if __name__ == "__main__":
+    args = parser.parse_args()
+    args = args.__dict__
+
+    acc_list = []
+    test_mkdir(args['save_path'])
+
+    os.environ['CUDA_VISIBLE_DEVICES'] = args['gpu']
+    dev = torch.device("cuda") if torch.cuda.is_available() else torch.device("cpu")
+
+    net = None
+    if args['model_name'] == 'mnist_2nn':
+        net = Mnist_2NN()
+    elif args['model_name'] == 'mnist_cnn':
+        net = Mnist_CNN()
+
+    if torch.cuda.device_count() > 1:
+        print("Let's use", torch.cuda.device_count(), "GPUs!")
+        net = torch.nn.DataParallel(net)
+    net = net.to(dev)
+
+    loss_func = F.cross_entropy
+    opti = optim.SGD(net.parameters(), lr=args['learning_rate'])
+
+    # myClients = ClientsGroup('mnist', args['IID'], args['num_of_clients'], dev)
+    # testDataLoader = myClients.test_data_loader
+    # 选出的进行comm的客户端集合
+    attack_rounds = list(range(0, args['num_comm'], args['attack_turn']))
+    # print(attack_rounds)
+    myClients = ClientsGroup('mnist', args['IID'], args['num_of_clients'], dev,attack_rounds=attack_rounds)
+    tempGroup=myClients
+    testDataLoader = myClients.test_data_loader
+    num_in_comm = int(max(args['num_of_clients'] * 1, 1))
+    num_in_comm1 = int(max(args['num_of_clients'] * args['cfraction'], 1))
+
+    # 获取上一轮的模型参数
+    global_parameters = {}
+    for key, var in net.state_dict().items():
+        global_parameters[key] = var.clone()
+
+    # 初始化信任分数矩阵
+    trust_scores=[]
+    trust_scores= np.ones(args['num_of_clients']) * 0
+
+    max_group_id = args['attack_num'] // args['group_size']
+    groups= [[0]*args['group_size'] for _ in range(max_group_id)]
+    
+    for i in range(args['num_comm']):
+        myClients = tempGroup
+        groupFlag=[0]*max_group_id
+        print("communication round {}".format(i + 1))
+        local_updates = [] 
+        local_arrays = []
+        update_weights = []
+        # 随机选取用户
+        order = np.random.permutation(args['num_of_clients'])
+        clients_in_comm = ['client{}'.format(i) for i in order[0:num_in_comm]]
+        clients_in_comm1 = ['client{}'.format(i) for i in order[0:num_in_comm1]]
+
+
+        # ----------------持续/轮次标签反转攻击-----------------
+        if(args['attack_type']==3):
+            if (i + 1) in myClients.attack_rounds:
+                myClients.flag_attack(args['attack_num'],clients_in_comm=clients_in_comm1)
+        # ----------------分组标签反转攻击-----------------
+        if(args['attack_type']==4):
+            if (i + 1) in myClients.attack_rounds:
+                for client in clients_in_comm:
+                    myClients.flag_group_attack(args['attack_num'],
+                                                client=client,
+                                                groups=groups,
+                                                group_size=args['group_size'],
+                                                groupFlag=groupFlag,
+                                                max_group_id=max_group_id,
+                                                clients_in_comm=clients_in_comm1)
+         # 中央服务器训练
+        global_model_parameters = myClients.centralTrain(args['epoch'], args['batchsize'], net, loss_func, opti, global_parameters)
+        global_model_parameters = get_weight(global_model_parameters, global_parameters)
+        global_updates = model2vector(global_model_parameters)
+        for client in tqdm(clients_in_comm):
+            # 本地客户端训练
+            local_parameters = myClients.clients_set[client].localUpdate(args['epoch'], args['batchsize'], net, loss_func, opti, global_parameters)
+
+            # if (i + 1) % args['attack_turn'] == 0:   
+            #     #type表示间隔攻击,随机找attack_num个用户投毒    
+            #     if(args['attack_type']==0):
+            #         if  int(client_name[6:]) <= args['attack_num']:
+            #             local_parameters = poison_update(local_parameters)
+            #     # type=1表示分组投毒
+            #     elif args['attack_type']==1 and int(client_name[6:])<=args['attack_num']:
+            #         # print(f"抽取出来的用户id:{int(client_name[6])}")
+            #         for g_num in range(max_group_id):
+            #             for index in range(args['group_size']):
+            #                 if(groupFlag[g_num]==0):
+            #                 # print(f"{g_num*args['group_size']+index},{int(client_name[6:])},{int(client_name[6:])//args['group_size']},{int(client_name[6:])%args['group_size']}")
+            #                     if g_num*args['group_size']+index==int(client_name[6:]) and groups[int(client_name[6:])//args['group_size']][int(client_name[6:])%args['group_size']]==0:
+            #                         groups[g_num][index]=1
+            #                         groupFlag[g_num]=1
+            #                         local_parameters = poison_update(local_parameters)
+            #                         if groups[g_num][args['group_size']-1]==1:
+            #                             groups[g_num][:]=[0]*args['group_size']
+            # 获取本地模型与全局模型的变化量 local_update
+            temp_update = copy.deepcopy(local_parameters)
+            local_update = get_weight(local_parameters, global_parameters)
+            local_array = copy.deepcopy(model2vector(local_update))
+            local_arrays.append(local_array)
+            # 将字典添加到列表中
+            local_updates.append(temp_update)  # 添加副本到列表
+
+        # for idex,client_update in enumerate(local_updates):
+        #     print('0 :',model2vector(client_update))
+        best_k, selected_updates, user_confidence_scores, update_weights= detection1(local_updates, local_arrays, global_updates,clients_in_comm ,trust_scores,update_weights )
+
+        # print(f"Best number of clusters: {best_k}, trust_scores: {trust_scores}")
+        # 初始化聚合更新字典
+        aggregated_update = {key: torch.zeros_like(param).to(dev) for key, param in global_parameters.items()}
+
+        for index, client_update in enumerate(selected_updates):
+            # print(index,model2vector(client_update))
+            for var in aggregated_update:
+                if var in client_update:
+                    client_update_tensor = client_update[var].clone().detach().to(dev)
+                    aggregated_update[var] += (client_update_tensor * update_weights[index])
+
+        # 使用SGD更新全局参数
+        if any(torch.norm(param) > 0 for param in aggregated_update.values()):
+            for var in global_parameters:
+                # global_parameters[var] -= args['learning_rate'] * aggregated_update[var]
+                global_parameters[var] +=  aggregated_update[var]
+        else :
+            for var in global_parameters:
+                # global_parameters[var] -= args['learning_rate'] * aggregated_update[var]
+                global_parameters[var] =  global_parameters[var]
+
+        with torch.no_grad():
+            if (i + 1) % args['val_freq'] == 0:
+                net.load_state_dict(global_parameters, strict=True)
+                sum_accu = 0
+                num = 0
+                for data, label in testDataLoader:
+                    data, label = data.to(dev), label.to(dev)
+                    preds = net(data)
+                    preds = torch.argmax(preds, dim=1)
+                    # print(preds.shape)
+                    # print(label.shape)
+                    sum_accu += (preds == label).float().mean()
+                    num += 1
+                accuracy = sum_accu / num
+                print(f'accuracy: {accuracy}')
+                acc_list.append(accuracy.item())
+
+        if (i + 1) % args['save_freq'] == 0:
+            torch.save(net.state_dict(), os.path.join(args['save_path'],
+                                                      f'{args["model_name"]}_num_comm{i}_E{args["epoch"]}_B{args["batchsize"]}_lr{args["learning_rate"]}_num_clients{args["num_of_clients"]}_cf{args["cfraction"]}.pth'))
+
+    res_dir = 'res'
+    test_mkdir(res_dir)
+    with open(os.path.join(res_dir, 'acc_list.pkl'), 'wb') as f:
+        pickle.dump(acc_list, f)
+    print(acc_list)
+
+    plt.plot(acc_list)
+    plt.xlabel('Communication rounds')
+    plt.ylabel('Accuracy')
+    plt.title('Model Accuracy over Communication Rounds')
+    plt.savefig(os.path.join(res_dir, '60-1持续.png'))

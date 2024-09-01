@@ -1,0 +1,231 @@
+import numpy as np
+import torch
+from torch.utils.data import TensorDataset, DataLoader
+from getData import GetDataSet
+import copy
+
+class client(object):
+    def __init__(self, trainDataSet, dev):
+        self.train_ds = trainDataSet
+        self.dev = dev
+        self.train_dl = None
+        self.local_parameters = None
+        self.data_size = len(trainDataSet)  # 记录数据集大小
+
+    def localUpdate(self, localEpoch, localBatchSize, Net, lossFun, opti, global_parameters,activate_backdoor ):
+        Net.load_state_dict(global_parameters, strict=True)
+        self.train_dl = DataLoader(self.train_ds, batch_size=localBatchSize, shuffle=True)
+        for epoch in range(localEpoch):
+            for data, label in self.train_dl:
+                data, label = data.to(self.dev), label.to(self.dev)
+                # preds = Net(data)
+                preds = Net(data, activate_backdoor)
+                loss = lossFun(preds, label)
+                loss.backward()
+                opti.step()
+                opti.zero_grad()
+
+        return Net.state_dict()
+
+    def local_val(self):
+        pass
+
+class ClientsGroup(object):
+    def __init__(self, dataSetName, isIID, numOfClients, dev,attack_rounds,weights=None):
+        self.data_set_name = dataSetName
+        self.is_iid = isIID
+        self.num_of_clients = numOfClients
+        self.dev = dev
+        self.clients_set = {}
+        self.central_data = None
+        
+        self.test_data_loader = None
+        self.weights = weights if weights is not None else np.ones(numOfClients) / numOfClients
+        self.attack_rounds = attack_rounds if attack_rounds is not None else []
+        self.dataSetBalanceAllocation()
+    # def inject_backdoor(self, attack_clients, trigger_pattern):
+    #     for client_name, client in self.clients_set.items():
+    #         if client_name in attack_clients:
+    #             # 获取当前客户端的数据
+    #             data, _ = client.train_ds.tensors
+    #             # 应用后门触发器模式
+    #             triggered_data = trigger_pattern(data)
+    #             # 更新客户端的数据集
+    #             client.train_ds = TensorDataset(triggered_data, client.train_ds.tensors[1])
+    def inject_backdoor(self, attack_clients, trigger_pattern):
+        for client_name, client in self.clients_set.items():
+            if client_name in attack_clients:
+                if client.train_ds.tensors[0].dim() == 4:
+                    images = client.train_ds.tensors[0].squeeze(1)  # 移除单维度通道维度
+                else:
+                    images = client.train_ds.tensors[0]
+                # 应用后门触发器模式
+                triggered_images = trigger_pattern(images)
+                # 如果原始张量是四维的，需要将修改后的三维张量转换回四维
+                if client.train_ds.tensors[0].dim() == 4:
+                    triggered_images = triggered_images.unsqueeze(1)
+                # 更新客户端的数据集
+                client.train_ds = TensorDataset(triggered_images, client.train_ds.tensors[1])
+                # 需要重新创建 DataLoader，因为数据已经改变
+                client.train_dl = DataLoader(client.train_ds, batch_size=100, shuffle=True)
+
+    def centralTrain(self, localEpoch, localBatchSize, Net, lossFun, opti, global_parameters, activate_backdoor):
+        Net.load_state_dict(global_parameters, strict=True)
+
+        for epoch in range(localEpoch):
+            for data, label in self.central_data:
+                data, label = data.to(self.dev), label.to(self.dev)
+                preds = Net(data, activate_backdoor)
+                loss = lossFun(preds, label)
+                loss.backward()
+                opti.step()
+                opti.zero_grad()
+
+        return copy.deepcopy(Net.state_dict())
+    def dataSetBalanceAllocation(self):
+        mnistDataSet = GetDataSet(self.data_set_name, self.is_iid)
+
+        test_data = torch.tensor(mnistDataSet.test_data)
+        test_label = torch.argmax(torch.tensor(mnistDataSet.test_label), dim=1)
+        #****test change****
+        # self.test_data_loader = DataLoader(TensorDataset( test_data, test_label), batch_size=100, shuffle=False)
+
+        if self.central_data is None:
+            order = np.arange(test_data.shape[0])
+            np.random.shuffle(order)
+            self.central_data = DataLoader(TensorDataset(test_data[order[0:100]], test_label[order[0:100]]), batch_size=100, shuffle=True)
+
+        self.test_data_loader = DataLoader(TensorDataset(test_data,test_label), batch_size=100, shuffle=False)
+        train_data = mnistDataSet.train_data
+        train_label = mnistDataSet.train_label
+
+        shard_size = mnistDataSet.train_data_size // self.num_of_clients // 2
+        shards_id = np.random.permutation(mnistDataSet.train_data_size // shard_size)
+        
+        for i in range(self.num_of_clients):
+            shards_id1 = shards_id[i * 2]
+            shards_id2 = shards_id[i * 2 + 1]
+            data_shards1 = train_data[shards_id1 * shard_size: shards_id1 * shard_size + shard_size]
+            data_shards2 = train_data[shards_id2 * shard_size: shards_id2 * shard_size + shard_size]
+            label_shards1 = train_label[shards_id1 * shard_size: shards_id1 * shard_size + shard_size]
+            label_shards2 = train_label[shards_id2 * shard_size: shards_id2 * shard_size + shard_size]
+            local_data, local_label = np.vstack((data_shards1, data_shards2)), np.vstack((label_shards1, label_shards2))
+            local_label = np.argmax(local_label, axis=1)
+            someone = client(TensorDataset(torch.tensor(local_data), torch.tensor(local_label)), self.dev)
+            self.clients_set['client{}'.format(i)] = someone
+    # def dataSetBalanceAllocation(self):
+    #     # ----------------读取数据-----------------------------
+    #     mnistDataSet = GetDataSet(self.data_set_name, self.is_iid)
+    #     test_data = torch.tensor(mnistDataSet.test_data)
+    #     test_label = torch.argmax(torch.tensor(mnistDataSet.test_label), dim=1)
+    #     # ----------------读取数据-------------------------
+    #     if self.central_data is None:
+    #         order = np.arange(test_data.shape[0])
+    #         np.random.shuffle(order)
+    #         self.central_data = DataLoader(TensorDataset(test_data[order[0:100]], test_label[order[0:100]]), batch_size=100, shuffle=True)
+
+    #     self.test_data_loader = DataLoader(TensorDataset(test_data, test_label), batch_size=100, shuffle=False)
+    #     train_data = mnistDataSet.train_data
+    #     train_label = mnistDataSet.train_label
+
+    #     total_shards = mnistDataSet.train_data_size // self.num_of_clients
+    #     shards_per_client = (self.weights * total_shards).astype(int)
+
+    #     start_idx = 0
+    #     for i, shards in enumerate(shards_per_client):
+    #         end_idx = start_idx + shards * self.num_of_clients
+    #         client_data = train_data[start_idx:end_idx].reshape(-1, train_data.shape[1])
+    #         client_labels = train_label[start_idx:end_idx].reshape(-1, train_label.shape[1])
+    #         local_data, local_label = client_data, np.argmax(client_labels, axis=1)
+    #          # 标签反转攻击
+    #         # if i < self.num_of_clients * self.attack_clients_ratio:
+    #         if False :
+    #             for t in range(totle_round):
+    #                 if(t%attack_round==0):
+    #                     local_label = self.flip_labels(local_label)
+            
+    #         someone = client(TensorDataset(torch.tensor(local_data), torch.tensor(local_label)), self.dev)
+    #         self.clients_set[f'client{i}'] = someone
+    #         start_idx = end_idx
+
+    # def flip_labels(self, labels):
+    #     # 假设标签是0-9的整数，将0变成9，1变成8
+    #     flipped_labels = 9 - labels
+    #     # print('flag_attack happen!')
+    #     return flipped_labels
+    def flip_labels(self, labels):
+        # 假设标签是0-9的整数，将0变成9，1变成8
+        # flipped_labels = 9 - labels
+        # if(labels==1):
+        #     flipped_labels=3
+        # # print('flag_attack happen!')
+        flipped_labels = torch.where(labels == 1, torch.tensor(3), labels)
+
+        return flipped_labels
+    
+        
+        
+        
+        
+    def flag_attack(self,attack_num,clients_in_comm=None):
+        for client_name in self.clients_set:
+            if client_name in clients_in_comm and int(client_name[6:])<attack_num:
+                print(f'flag attack happen on: {client_name}')
+                client_dataset = self.clients_set[client_name].train_ds
+                data, labels = client_dataset.tensors
+                flipped_labels = self.flip_labels(labels)
+                self.clients_set[client_name].train_ds = TensorDataset(data, flipped_labels)
+    # def flip_labels(self, labels):
+    # # 将标签2改为5
+    #     flipped_labels = np.where(labels == 2, 5, labels)
+    #     return flipped_labels
+    
+    # def flag_attack(self, attack_num, clients_in_comm=None):
+    #     for client_name in self.clients_set:
+    #         if clients_in_comm is not None and client_name in clients_in_comm and int(client_name[6:]) < attack_num:
+    #             client_dataset = self.clients_set[client_name].train_ds
+    #             data, labels = client_dataset.tensors
+    #             # 使用torch.eq来比较tensor，找出标签为2的元素
+    #             labels_eq_2 = torch.eq(labels, 2)
+    #             # 使用布尔索引来获取标签为2的元素的索引
+    #             indices_eq_2 = torch.nonzero(labels_eq_2, as_tuple=False).squeeze()
+    #             # 如果存在标签为2的元素，则执行flip_labels
+    #             if len(indices_eq_2) > 0:
+
+    #                 print(f'flag attack happen on: {client_name}')
+    #                 # 将整个labels tensor传递给flip_labels函数
+    #                 flipped_labels = self.flip_labels(labels.numpy())
+
+    #                 # 将flip后的labels重新转换为tensor
+    #                 flipped_labels_tensor = torch.from_numpy(flipped_labels)
+
+    #                 # 更新client_dataset的labels
+    #                 client_dataset.tensors = (data, flipped_labels_tensor)
+                
+    #                 # 更新self.clients_set中的client的train_ds
+    #                 self.clients_set[client_name].train_ds = client_dataset
+    def flag_group_attack(self,attack_num,client,groups,group_size,groupFlag,max_group_id,clients_in_comm=None):
+        for client_name in self.clients_set:
+            if client_name in clients_in_comm and int(client_name[6:])<attack_num and client==client_name:
+                    for g_num in range(max_group_id):
+                        for index in range(group_size):
+                            if(groupFlag[g_num]==0):
+                                # print(f"{g_num*args['group_size']+index},{int(client_name[6:])},{int(client_name[6:])//args['group_size']},{int(client_name[6:])%args['group_size']}")
+                                if g_num*group_size+index==int(client_name[6:]) and groups[int(client_name[6:])//group_size][int(client_name[6:])%group_size]==0:
+                                        groups[g_num][index]=1
+                                        groupFlag[g_num]=1
+                                        print(groups)
+                                        print(f'flag group attack happen on: {client_name}')
+                                        client_dataset = self.clients_set[client_name].train_ds
+                                        data, labels = client_dataset.tensors
+                                        flipped_labels = self.flip_labels(labels)
+                                        self.clients_set[client_name].train_ds = TensorDataset(data, flipped_labels)
+                                        if groups[g_num][group_size-1]==1:
+                                            groups[g_num][:]=[0]*group_size
+                
+                
+                                           
+if __name__ == "__main__":
+    MyClients = ClientsGroup('mnist', True, 100, 1)
+    print(MyClients.clients_set['client10'].train_ds[0:100])
+    print(MyClients.clients_set['client11'].train_ds[400:500])

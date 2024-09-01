@@ -1,0 +1,230 @@
+2024-07-30 19:38:52,841 - INFO - Detection round 1 completed in 15.15 seconds.
+2024-07-30 19:38:53,347 - INFO - Validation accuracy at round 1: 0.0974
+2024-07-30 19:39:23,889 - INFO - Detection round 2 completed in 9.91 seconds.
+2024-07-30 19:39:24,413 - INFO - Validation accuracy at round 2: 0.1135
+2024-07-30 19:39:53,140 - INFO - Detection round 3 completed in 12.15 seconds.
+2024-07-30 19:39:53,636 - INFO - Validation accuracy at round 3: 0.1736
+2024-07-30 19:40:22,927 - INFO - Detection round 4 completed in 11.89 seconds.
+2024-07-30 19:40:23,440 - INFO - Validation accuracy at round 4: 0.2803
+2024-07-30 19:40:51,405 - INFO - Detection round 5 completed in 10.90 seconds.
+2024-07-30 19:40:51,905 - INFO - Validation accuracy at round 5: 0.2699
+2024-07-30 19:41:22,039 - INFO - Detection round 6 completed in 8.94 seconds.
+2024-07-30 19:41:22,537 - INFO - Validation accuracy at round 6: 0.2084
+2024-07-30 19:41:54,983 - INFO - Detection round 7 completed in 10.17 seconds.
+2024-07-30 19:41:55,518 - INFO - Validation accuracy at round 7: 0.2328
+2024-07-30 19:42:25,833 - INFO - Detection round 8 completed in 9.48 seconds.
+2024-07-30 19:42:26,354 - INFO - Validation accuracy at round 8: 0.1060
+2024-07-30 19:42:56,018 - INFO - Detection round 9 completed in 9.27 seconds.
+2024-07-30 19:42:56,520 - INFO - Validation accuracy at round 9: 0.2407
+2024-07-30 19:43:29,796 - INFO - Detection round 10 completed in 12.84 seconds.
+2024-07-30 19:43:30,283 - INFO - Validation accuracy at round 10: 0.4430
+2024-07-30 19:44:02,889 - INFO - Detection round 11 completed in 12.42 seconds.
+2024-07-30 19:44:03,408 - INFO - Validation accuracy at round 11: 0.4734
+2024-07-30 19:44:37,999 - INFO - Detection round 12 completed in 13.76 seconds.
+2024-07-30 19:44:38,547 - INFO - Validation accuracy at round 12: 0.5566
+2024-07-30 19:45:14,380 - INFO - Detection round 13 completed in 14.04 seconds.
+2024-07-30 19:45:14,880 - INFO - Validation accuracy at round 13: 0.5598
+2024-07-30 19:45:40,455 - INFO - Detection round 14 completed in 9.37 seconds.
+2024-07-30 19:45:40,956 - INFO - Validation accuracy at round 14: 0.5337
+2024-07-30 19:46:14,671 - INFO - Detection round 15 completed in 12.12 seconds.
+2024-07-30 19:46:15,190 - INFO - Validation accuracy at round 15: 0.4160
+2024-07-30 19:46:48,860 - INFO - Detection round 16 completed in 15.70 seconds.
+2024-07-30 19:46:49,380 - INFO - Validation accuracy at round 16: 0.5453
+2024-07-30 19:47:21,987 - INFO - Detection round 17 completed in 11.62 seconds.
+2024-07-30 19:47:22,482 - INFO - Validation accuracy at round 17: 0.6652
+2024-07-30 19:47:51,667 - INFO - Detection round 18 completed in 8.67 seconds.
+2024-07-30 19:47:52,182 - INFO - Validation accuracy at round 18: 0.7420
+2024-07-30 19:48:18,438 - INFO - Detection round 19 completed in 8.58 seconds.
+2024-07-30 19:48:18,961 - INFO - Validation accuracy at round 19: 0.7001
+2024-07-30 19:48:53,320 - INFO - Detection round 20 completed in 13.45 seconds.
+2024-07-30 19:48:53,841 - INFO - Validation accuracy at round 20: 0.6247
+2024-07-30 19:49:25,642 - INFO - Detection round 21 completed in 9.33 seconds.
+2024-07-30 19:49:26,130 - INFO - Validation accuracy at round 21: 0.5936
+2024-07-30 19:49:54,621 - INFO - Detection round 22 completed in 8.44 seconds.
+2024-07-30 19:49:55,120 - INFO - Validation accuracy at round 22: 0.7764
+2024-07-30 19:50:28,361 - INFO - Detection round 23 completed in 12.38 seconds.
+2024-07-30 19:50:28,849 - INFO - Validation accuracy at round 23: 0.8205
+2024-07-30 19:50:59,753 - INFO - Detection round 24 completed in 12.54 seconds.
+2024-07-30 19:51:00,254 - INFO - Validation accuracy at round 24: 0.7940
+2024-07-30 19:51:34,504 - INFO - Detection round 25 completed in 11.31 seconds.
+2024-07-30 19:51:35,004 - INFO - Validation accuracy at round 25: 0.8327
+2024-07-30 19:52:09,400 - INFO - Detection round 26 completed in 13.99 seconds.
+2024-07-30 19:52:09,889 - INFO - Validation accuracy at round 26: 0.8233
+2024-07-30 19:52:41,806 - INFO - Detection round 27 completed in 12.56 seconds.
+2024-07-30 19:52:42,389 - INFO - Validation accuracy at round 27: 0.6746
+2024-07-30 19:53:11,237 - INFO - Detection round 28 completed in 8.41 seconds.
+2024-07-30 19:53:11,734 - INFO - Validation accuracy at round 28: 0.6326
+2024-07-30 19:53:44,305 - INFO - Detection round 29 completed in 12.07 seconds.
+2024-07-30 19:53:44,808 - INFO - Validation accuracy at round 29: 0.7320
+2024-07-30 19:54:10,454 - INFO - Detection round 30 completed in 9.39 seconds.
+2024-07-30 19:54:10,975 - INFO - Validation accuracy at round 30: 0.8447
+2024-07-30 19:54:38,058 - INFO - Detection round 31 completed in 9.83 seconds.
+2024-07-30 19:54:38,587 - INFO - Validation accuracy at round 31: 0.8770
+2024-07-30 19:55:09,316 - INFO - Detection round 32 completed in 13.18 seconds.
+2024-07-30 19:55:09,820 - INFO - Validation accuracy at round 32: 0.7183
+2024-07-30 19:55:42,193 - INFO - Detection round 33 completed in 13.87 seconds.
+2024-07-30 19:55:42,687 - INFO - Validation accuracy at round 33: 0.9132
+2024-07-30 19:56:12,442 - INFO - Detection round 34 completed in 12.64 seconds.
+2024-07-30 19:56:12,951 - INFO - Validation accuracy at round 34: 0.8278
+2024-07-30 19:56:45,349 - INFO - Detection round 35 completed in 13.88 seconds.
+2024-07-30 19:56:46,020 - INFO - Validation accuracy at round 35: 0.6966
+2024-07-30 19:57:22,469 - INFO - Detection round 36 completed in 14.36 seconds.
+2024-07-30 19:57:22,974 - INFO - Validation accuracy at round 36: 0.6965
+2024-07-30 19:57:53,314 - INFO - Detection round 37 completed in 9.42 seconds.
+2024-07-30 19:57:53,810 - INFO - Validation accuracy at round 37: 0.5662
+2024-07-30 19:58:22,702 - INFO - Detection round 38 completed in 9.13 seconds.
+2024-07-30 19:58:23,210 - INFO - Validation accuracy at round 38: 0.9360
+2024-07-30 19:58:52,059 - INFO - Detection round 39 completed in 11.22 seconds.
+2024-07-30 19:58:52,555 - INFO - Validation accuracy at round 39: 0.9240
+2024-07-30 19:59:23,284 - INFO - Detection round 40 completed in 12.24 seconds.
+2024-07-30 19:59:23,797 - INFO - Validation accuracy at round 40: 0.9240
+2024-07-30 19:59:54,484 - INFO - Detection round 41 completed in 10.36 seconds.
+2024-07-30 19:59:54,989 - INFO - Validation accuracy at round 41: 0.8832
+2024-07-30 20:00:20,493 - INFO - Detection round 42 completed in 8.34 seconds.
+2024-07-30 20:00:20,976 - INFO - Validation accuracy at round 42: 0.2659
+2024-07-30 20:00:54,302 - INFO - Detection round 43 completed in 13.45 seconds.
+2024-07-30 20:00:54,800 - INFO - Validation accuracy at round 43: 0.6134
+2024-07-30 20:01:22,466 - INFO - Detection round 44 completed in 9.31 seconds.
+2024-07-30 20:01:22,957 - INFO - Validation accuracy at round 44: 0.7221
+2024-07-30 20:01:56,468 - INFO - Detection round 45 completed in 15.53 seconds.
+2024-07-30 20:01:56,959 - INFO - Validation accuracy at round 45: 0.9496
+2024-07-30 20:02:28,530 - INFO - Detection round 46 completed in 10.21 seconds.
+2024-07-30 20:02:29,043 - INFO - Validation accuracy at round 46: 0.9496
+2024-07-30 20:03:02,663 - INFO - Detection round 47 completed in 10.95 seconds.
+2024-07-30 20:03:03,181 - INFO - Validation accuracy at round 47: 0.9496
+2024-07-30 20:03:32,562 - INFO - Detection round 48 completed in 10.30 seconds.
+2024-07-30 20:03:33,061 - INFO - Validation accuracy at round 48: 0.9496
+2024-07-30 20:04:02,432 - INFO - Detection round 49 completed in 11.78 seconds.
+2024-07-30 20:04:02,969 - INFO - Validation accuracy at round 49: 0.9496
+2024-07-30 20:04:36,874 - INFO - Detection round 50 completed in 11.57 seconds.
+2024-07-30 20:04:37,382 - INFO - Validation accuracy at round 50: 0.9496
+2024-07-30 20:05:04,692 - INFO - Detection round 51 completed in 10.49 seconds.
+2024-07-30 20:05:05,217 - INFO - Validation accuracy at round 51: 0.9377
+2024-07-30 20:05:34,915 - INFO - Detection round 52 completed in 12.22 seconds.
+2024-07-30 20:05:35,430 - INFO - Validation accuracy at round 52: 0.9377
+2024-07-30 20:06:07,077 - INFO - Detection round 53 completed in 13.05 seconds.
+2024-07-30 20:06:07,611 - INFO - Validation accuracy at round 53: 0.9377
+2024-07-30 20:06:33,325 - INFO - Detection round 54 completed in 9.06 seconds.
+2024-07-30 20:06:33,854 - INFO - Validation accuracy at round 54: 0.9377
+2024-07-30 20:07:03,313 - INFO - Detection round 55 completed in 12.17 seconds.
+2024-07-30 20:07:03,835 - INFO - Validation accuracy at round 55: 0.9377
+2024-07-30 20:07:33,884 - INFO - Detection round 56 completed in 13.16 seconds.
+2024-07-30 20:07:34,389 - INFO - Validation accuracy at round 56: 0.9377
+2024-07-30 20:08:04,877 - INFO - Detection round 57 completed in 9.16 seconds.
+2024-07-30 20:08:05,375 - INFO - Validation accuracy at round 57: 0.8712
+2024-07-30 20:08:36,424 - INFO - Detection round 58 completed in 9.58 seconds.
+2024-07-30 20:08:36,916 - INFO - Validation accuracy at round 58: 0.1828
+2024-07-30 20:09:04,924 - INFO - Detection round 59 completed in 10.65 seconds.
+2024-07-30 20:09:05,448 - INFO - Validation accuracy at round 59: 0.6468
+2024-07-30 20:09:36,199 - INFO - Detection round 60 completed in 10.53 seconds.
+2024-07-30 20:09:36,711 - INFO - Validation accuracy at round 60: 0.7401
+2024-07-30 20:10:04,902 - INFO - Detection round 61 completed in 10.88 seconds.
+2024-07-30 20:10:05,398 - INFO - Validation accuracy at round 61: 0.7612
+2024-07-30 20:10:35,452 - INFO - Detection round 62 completed in 11.40 seconds.
+2024-07-30 20:10:35,944 - INFO - Validation accuracy at round 62: 0.6568
+2024-07-30 20:11:10,276 - INFO - Detection round 63 completed in 14.50 seconds.
+2024-07-30 20:11:10,797 - INFO - Validation accuracy at round 63: 0.5111
+2024-07-30 20:11:43,769 - INFO - Detection round 64 completed in 11.28 seconds.
+2024-07-30 20:11:44,292 - INFO - Validation accuracy at round 64: 0.8275
+2024-07-30 20:12:17,478 - INFO - Detection round 65 completed in 11.90 seconds.
+2024-07-30 20:12:17,964 - INFO - Validation accuracy at round 65: 0.6728
+2024-07-30 20:12:46,707 - INFO - Detection round 66 completed in 10.31 seconds.
+2024-07-30 20:12:47,208 - INFO - Validation accuracy at round 66: 0.7354
+2024-07-30 20:13:14,843 - INFO - Detection round 67 completed in 9.68 seconds.
+2024-07-30 20:13:15,341 - INFO - Validation accuracy at round 67: 0.6906
+2024-07-30 20:13:46,761 - INFO - Detection round 68 completed in 9.66 seconds.
+2024-07-30 20:13:47,262 - INFO - Validation accuracy at round 68: 0.6532
+2024-07-30 20:14:13,321 - INFO - Detection round 69 completed in 7.48 seconds.
+2024-07-30 20:14:13,817 - INFO - Validation accuracy at round 69: 0.7277
+2024-07-30 20:14:44,255 - INFO - Detection round 70 completed in 10.78 seconds.
+2024-07-30 20:14:44,753 - INFO - Validation accuracy at round 70: 0.8301
+2024-07-30 20:15:14,869 - INFO - Detection round 71 completed in 11.54 seconds.
+2024-07-30 20:15:15,368 - INFO - Validation accuracy at round 71: 0.7313
+2024-07-30 20:15:48,018 - INFO - Detection round 72 completed in 13.32 seconds.
+2024-07-30 20:15:48,514 - INFO - Validation accuracy at round 72: 0.7149
+2024-07-30 20:16:17,528 - INFO - Detection round 73 completed in 11.15 seconds.
+2024-07-30 20:16:18,025 - INFO - Validation accuracy at round 73: 0.7575
+2024-07-30 20:16:44,987 - INFO - Detection round 74 completed in 9.29 seconds.
+2024-07-30 20:16:45,503 - INFO - Validation accuracy at round 74: 0.9584
+2024-07-30 20:17:18,884 - INFO - Detection round 75 completed in 14.59 seconds.
+2024-07-30 20:17:19,399 - INFO - Validation accuracy at round 75: 0.8186
+2024-07-30 20:17:51,401 - INFO - Detection round 76 completed in 10.65 seconds.
+2024-07-30 20:17:51,906 - INFO - Validation accuracy at round 76: 0.7248
+2024-07-30 20:18:27,777 - INFO - Detection round 77 completed in 12.78 seconds.
+2024-07-30 20:18:28,278 - INFO - Validation accuracy at round 77: 0.8667
+2024-07-30 20:19:03,905 - INFO - Detection round 78 completed in 13.47 seconds.
+2024-07-30 20:19:04,419 - INFO - Validation accuracy at round 78: 0.9217
+2024-07-30 20:19:39,167 - INFO - Detection round 79 completed in 14.64 seconds.
+2024-07-30 20:19:39,687 - INFO - Validation accuracy at round 79: 0.9065
+2024-07-30 20:20:07,044 - INFO - Detection round 80 completed in 9.17 seconds.
+2024-07-30 20:20:07,537 - INFO - Validation accuracy at round 80: 0.4346
+2024-07-30 20:20:37,449 - INFO - Detection round 81 completed in 10.66 seconds.
+2024-07-30 20:20:37,963 - INFO - Validation accuracy at round 81: 0.7719
+2024-07-30 20:21:18,953 - INFO - Detection round 82 completed in 18.02 seconds.
+2024-07-30 20:21:19,451 - INFO - Validation accuracy at round 82: 0.7360
+2024-07-30 20:21:55,008 - INFO - Detection round 83 completed in 13.20 seconds.
+2024-07-30 20:21:55,526 - INFO - Validation accuracy at round 83: 0.7203
+2024-07-30 20:22:26,280 - INFO - Detection round 84 completed in 10.17 seconds.
+2024-07-30 20:22:26,781 - INFO - Validation accuracy at round 84: 0.8991
+2024-07-30 20:22:56,038 - INFO - Detection round 85 completed in 8.52 seconds.
+2024-07-30 20:22:56,561 - INFO - Validation accuracy at round 85: 0.8080
+2024-07-30 20:23:26,936 - INFO - Detection round 86 completed in 9.37 seconds.
+2024-07-30 20:23:27,442 - INFO - Validation accuracy at round 86: 0.7685
+2024-07-30 20:24:01,194 - INFO - Detection round 87 completed in 11.99 seconds.
+2024-07-30 20:24:01,691 - INFO - Validation accuracy at round 87: 0.9428
+2024-07-30 20:24:32,181 - INFO - Detection round 88 completed in 9.77 seconds.
+2024-07-30 20:24:32,684 - INFO - Validation accuracy at round 88: 0.9490
+2024-07-30 20:25:00,909 - INFO - Detection round 89 completed in 9.66 seconds.
+2024-07-30 20:25:01,422 - INFO - Validation accuracy at round 89: 0.9340
+2024-07-30 20:25:33,067 - INFO - Detection round 90 completed in 12.54 seconds.
+2024-07-30 20:25:33,563 - INFO - Validation accuracy at round 90: 0.3362
+2024-07-30 20:26:02,485 - INFO - Detection round 91 completed in 9.67 seconds.
+2024-07-30 20:26:03,029 - INFO - Validation accuracy at round 91: 0.7398
+2024-07-30 20:26:33,514 - INFO - Detection round 92 completed in 10.17 seconds.
+2024-07-30 20:26:34,030 - INFO - Validation accuracy at round 92: 0.6675
+2024-07-30 20:27:07,344 - INFO - Detection round 93 completed in 12.15 seconds.
+2024-07-30 20:27:07,904 - INFO - Validation accuracy at round 93: 0.8098
+2024-07-30 20:27:49,897 - INFO - Detection round 94 completed in 20.86 seconds.
+2024-07-30 20:27:50,450 - INFO - Validation accuracy at round 94: 0.6322
+2024-07-30 20:28:25,342 - INFO - Detection round 95 completed in 13.43 seconds.
+2024-07-30 20:28:25,844 - INFO - Validation accuracy at round 95: 0.9376
+2024-07-30 20:28:57,545 - INFO - Detection round 96 completed in 10.07 seconds.
+2024-07-30 20:28:58,073 - INFO - Validation accuracy at round 96: 0.9291
+2024-07-30 20:29:30,377 - INFO - Detection round 97 completed in 11.09 seconds.
+2024-07-30 20:29:30,875 - INFO - Validation accuracy at round 97: 0.9587
+2024-07-30 20:30:03,099 - INFO - Detection round 98 completed in 10.54 seconds.
+2024-07-30 20:30:03,629 - INFO - Validation accuracy at round 98: 0.6501
+2024-07-30 20:30:34,136 - INFO - Detection round 99 completed in 9.47 seconds.
+2024-07-30 20:30:34,742 - INFO - Validation accuracy at round 99: 0.8561
+2024-07-30 20:31:22,583 - INFO - Detection round 100 completed in 24.75 seconds.
+2024-07-30 20:31:23,135 - INFO - Validation accuracy at round 100: 0.8544
+2024-07-30 20:31:53,453 - INFO - Detection round 101 completed in 9.52 seconds.
+2024-07-30 20:31:53,951 - INFO - Validation accuracy at round 101: 0.4354
+2024-07-30 20:32:23,433 - INFO - Detection round 102 completed in 9.53 seconds.
+2024-07-30 20:32:23,933 - INFO - Validation accuracy at round 102: 0.7354
+2024-07-30 20:33:00,696 - INFO - Detection round 103 completed in 14.07 seconds.
+2024-07-30 20:33:01,254 - INFO - Validation accuracy at round 103: 0.7685
+2024-07-30 20:33:33,447 - INFO - Detection round 104 completed in 12.30 seconds.
+2024-07-30 20:33:34,025 - INFO - Validation accuracy at round 104: 0.8409
+2024-07-30 20:34:10,350 - INFO - Detection round 105 completed in 17.35 seconds.
+2024-07-30 20:34:10,930 - INFO - Validation accuracy at round 105: 0.8585
+2024-07-30 20:34:49,025 - INFO - Detection round 106 completed in 16.51 seconds.
+2024-07-30 20:34:49,723 - INFO - Validation accuracy at round 106: 0.8777
+2024-07-30 20:35:37,007 - INFO - Detection round 107 completed in 24.84 seconds.
+2024-07-30 20:35:37,576 - INFO - Validation accuracy at round 107: 0.8222
+2024-07-30 20:36:24,713 - INFO - Detection round 108 completed in 24.23 seconds.
+2024-07-30 20:36:25,272 - INFO - Validation accuracy at round 108: 0.8384
+2024-07-30 20:37:01,432 - INFO - Detection round 109 completed in 14.33 seconds.
+2024-07-30 20:37:02,004 - INFO - Validation accuracy at round 109: 0.9644
+2024-07-30 20:37:35,751 - INFO - Detection round 110 completed in 11.98 seconds.
+2024-07-30 20:37:36,316 - INFO - Validation accuracy at round 110: 0.9644
+2024-07-30 20:38:11,645 - INFO - Detection round 111 completed in 15.58 seconds.
+2024-07-30 20:38:12,232 - INFO - Validation accuracy at round 111: 0.9213
+2024-07-30 20:38:41,801 - INFO - Detection round 112 completed in 9.77 seconds.
+2024-07-30 20:38:42,349 - INFO - Validation accuracy at round 112: 0.9582
+2024-07-30 20:39:17,392 - INFO - Detection round 113 completed in 14.04 seconds.
+2024-07-30 20:39:17,991 - INFO - Validation accuracy at round 113: 0.8313
+2024-07-30 20:39:53,963 - INFO - Detection round 114 completed in 13.19 seconds.
+2024-07-30 20:39:54,509 - INFO - Validation accuracy at round 114: 0.7711
+2024-07-30 20:40:29,813 - INFO - Detection round 115 completed in 14.22 seconds.
+2024-07-30 20:40:30,312 - INFO - Validation accuracy at round 115: 0.8091

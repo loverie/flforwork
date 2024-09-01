@@ -1,0 +1,38 @@
+2024-07-31 12:42:05,757 - INFO - K-Fedtrust round 1 completed . Validation accuracy: 0.1009
+2024-07-31 12:42:36,821 - INFO - K-Fedtrust round 2 completed . Validation accuracy: 0.1032
+2024-07-31 12:43:11,012 - INFO - K-Fedtrust round 3 completed . Validation accuracy: 0.1944
+2024-07-31 12:43:44,877 - INFO - K-Fedtrust round 4 completed . Validation accuracy: 0.3497
+2024-07-31 12:44:19,836 - INFO - K-Fedtrust round 5 completed . Validation accuracy: 0.4518
+2024-07-31 12:44:52,568 - INFO - K-Fedtrust round 6 completed . Validation accuracy: 0.5484
+2024-07-31 12:45:24,915 - INFO - K-Fedtrust round 7 completed . Validation accuracy: 0.6485
+2024-07-31 12:45:56,920 - INFO - K-Fedtrust round 8 completed . Validation accuracy: 0.7054
+2024-07-31 12:46:30,877 - INFO - K-Fedtrust round 9 completed . Validation accuracy: 0.7172
+2024-07-31 12:47:04,166 - INFO - K-Fedtrust round 10 completed . Validation accuracy: 0.6962
+2024-07-31 12:47:38,404 - INFO - K-Fedtrust round 11 completed . Validation accuracy: 0.6731
+2024-07-31 12:48:11,248 - INFO - K-Fedtrust round 12 completed . Validation accuracy: 0.7393
+2024-07-31 12:48:45,396 - INFO - K-Fedtrust round 13 completed . Validation accuracy: 0.7511
+2024-07-31 12:49:25,429 - INFO - K-Fedtrust round 14 completed . Validation accuracy: 0.7814
+2024-07-31 12:50:01,908 - INFO - K-Fedtrust round 15 completed . Validation accuracy: 0.7866
+2024-07-31 12:50:35,623 - INFO - K-Fedtrust round 16 completed . Validation accuracy: 0.7470
+2024-07-31 12:51:11,346 - INFO - K-Fedtrust round 17 completed . Validation accuracy: 0.8311
+2024-07-31 12:51:50,021 - INFO - K-Fedtrust round 18 completed . Validation accuracy: 0.8199
+2024-07-31 12:52:27,621 - INFO - K-Fedtrust round 19 completed . Validation accuracy: 0.7660
+2024-07-31 12:53:07,778 - INFO - K-Fedtrust round 20 completed . Validation accuracy: 0.8472
+2024-07-31 12:53:51,248 - INFO - K-Fedtrust round 21 completed . Validation accuracy: 0.7997
+2024-07-31 12:54:36,665 - INFO - K-Fedtrust round 22 completed . Validation accuracy: 0.7757
+2024-07-31 12:55:13,352 - INFO - K-Fedtrust round 23 completed . Validation accuracy: 0.8630
+2024-07-31 12:55:51,481 - INFO - K-Fedtrust round 24 completed . Validation accuracy: 0.8144
+2024-07-31 12:56:27,525 - INFO - K-Fedtrust round 25 completed . Validation accuracy: 0.8732
+2024-07-31 12:57:01,683 - INFO - K-Fedtrust round 26 completed . Validation accuracy: 0.8579
+2024-07-31 12:57:43,197 - INFO - K-Fedtrust round 27 completed . Validation accuracy: 0.8520
+2024-07-31 12:58:23,479 - INFO - K-Fedtrust round 28 completed . Validation accuracy: 0.6716
+2024-07-31 12:59:09,991 - INFO - K-Fedtrust round 29 completed . Validation accuracy: 0.8498
+2024-07-31 12:59:53,221 - INFO - K-Fedtrust round 30 completed . Validation accuracy: 0.8186
+2024-07-31 13:00:38,470 - INFO - K-Fedtrust round 31 completed . Validation accuracy: 0.8168
+
+# 减小数据集
+
+2024-07-31 13:03:36,056 - INFO - K-Fedtrust round 1 completed . Validation accuracy: 0.0892
+2024-07-31 13:04:10,520 - INFO - K-Fedtrust round 2 completed . Validation accuracy: 0.0892
+2024-07-31 13:04:36,560 - INFO - K-Fedtrust round 3 completed . Validation accuracy: 0.0892
+2024-07-31 13:05:07,229 - INFO - K-Fedtrust round 4 completed . Validation accuracy: 0.1459
